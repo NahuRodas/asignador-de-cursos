@@ -13,7 +13,7 @@ int verificarTamCurso(char *);
 
 struct Alumno
 {
-    char legajo[7];
+    char legajo[8];
     char nombre[20];
     char apellido[20];
 };
@@ -55,15 +55,15 @@ void menu()
     case 3:
         leerCurso();
         break;
-    /* case 4:
+    case 4:
         buscarEnCurso();
         break;
-    case 5:
-        eliminarAlumno();
-        break;
-    case 6:
-        crearCurso();
-        break; */
+        /*  case 5:
+             eliminarAlumno();
+             break;
+         case 6:
+             crearCurso();
+             break; */
     case 0:
         exit;
         break;
@@ -76,7 +76,7 @@ void menu()
 
 void asignarIndividual()
 {
-    struct Alumno alumno;
+    struct Alumno alumno = {"", "", ""};
     char curso[8] = "";
 
     printf("%s", "\n***********************************************");
@@ -101,20 +101,18 @@ void asignarIndividual()
     printf("%s", "\nCurso: ");
     scanf("%s", curso);
     strcat(curso, ".txt");
-    FILE *pCurso = fopen(curso, "a");
-
-    if (pCurso == NULL)
-        printf("No se pudo abrir el archivo.\n");
 
     while (verificarTamCurso(curso) > 40)
     {
         printf("Curso lleno, por favor ingrese otro curso.");
-        fclose(pCurso);
         printf("%s", "\nCurso: ");
         scanf("%s", &curso);
         strcat(curso, ".txt");
-        fopen(curso, "a");
     }
+
+    FILE *pCurso = fopen(curso, "a");
+    if (pCurso == NULL)
+        printf("No se pudo abrir el archivo.\n");
 
     fprintf(pCurso, alumno.legajo);
     fprintf(pCurso, "-");
@@ -165,19 +163,28 @@ void leerCurso()
 void buscarEnCurso()
 {
     char linea[50];
+    char legajoEnCurso[8];
     char legajo[8] = "";
     char curso[8] = "";
     printf("\nIngrese el legajo del alumno que desea buscar: ");
     scanf("%s", legajo);
     printf("\nIngrese el curso: ");
     scanf("%s", curso);
+    char auxiliar[8] = "";
+    strcat(auxiliar, curso);
+    strcat(curso, ".txt");
 
     FILE *pCurso = fopen(curso, "r");
+
     while (fgets(linea, sizeof(linea), pCurso) != NULL)
     {
-        if (strcmp(linea, legajo))
+        for (int i = 0; i < 8; i++)
         {
-            /* code */
+            legajoEnCurso[i] = linea[i];
+        }
+        if (strcmp(legajoEnCurso, legajo))
+        {
+            printf("\nEl alumno se encuentra en el curso %s", auxiliar);
         }
     }
     fclose(pCurso);
