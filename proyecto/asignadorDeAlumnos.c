@@ -3,6 +3,7 @@
 #include <string.h>
 
 void menu();
+int vereficarCursoExistente(char *);
 void asignarLista();
 void asignarIndividual();
 void leerCurso();
@@ -151,7 +152,14 @@ void leerCurso()
     printf("%s", "\nIngrese codigo del curso que desea ver.");
     printf("%s", "\nCurso: ");
     scanf("%s", &curso);
-    strcat(curso, ".txt");
+
+    while (!(vereficarCursoExistente(curso)))
+    {
+        printf("\nError, no existe el curso %s", curso);
+        printf("\nIngrese un curso existente: ");
+        scanf("%s", &curso);
+    }
+
     FILE *pCurso = fopen(curso, "r");
     while (fgets(linea, sizeof(linea), pCurso) != NULL)
     {
@@ -160,11 +168,23 @@ void leerCurso()
     fclose(pCurso);
 }
 
+int vereficarCursoExistente(char *curso)
+{
+    strcat(curso, ".txt");
+    FILE *pCurso = fopen(curso, "r");
+    if (pCurso == NULL)
+        return 0;
+    else
+        return 1;
+    fclose(pCurso);
+}
+
 void buscarEnCurso()
 {
-    char linea[50];
+    int bandera = 0;
+    char linea[8];
     char legajoEnCurso[8];
-    char legajo[8] = "";
+    char legajo[8];
     char curso[8] = "";
     printf("\nIngrese el legajo del alumno que desea buscar: ");
     scanf("%s", legajo);
@@ -178,14 +198,24 @@ void buscarEnCurso()
 
     while (fgets(linea, sizeof(linea), pCurso) != NULL)
     {
-        for (int i = 0; i < 8; i++)
+        printf("%s", legajo);
+        printf("%s\n", linea);
+
+        if (strcmp(legajo, linea) == 0)
         {
-            legajoEnCurso[i] = linea[i];
-        }
-        if (strcmp(legajoEnCurso, legajo))
-        {
-            printf("\nEl alumno se encuentra en el curso %s", auxiliar);
+            bandera = 1;
+            break;
         }
     }
+    if (bandera == 0)
+    {
+
+        printf("\nEl alumno NO se encuentra en el curso %s", auxiliar);
+    }
+    else
+    {
+        printf("\nEl alumno se encuentra en el curso %s", auxiliar);
+    }
+
     fclose(pCurso);
 }

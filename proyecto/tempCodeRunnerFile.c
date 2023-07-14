@@ -1,3 +1,1 @@
-while ((c = getchar()) != '\n' && c != EOF)
-    {
-    }
+        printf("\n*******%s*******", linea);
